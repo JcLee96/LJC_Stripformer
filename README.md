@@ -1,68 +1,107 @@
-# =========================
-# ONE-SHOT SETUP + RUN (PowerShell)
-# Run this at repo root: ...\LJC_Stripformer
-# =========================
+# LJC_Stripformer (Stripformer-based Image Deblurring)
 
-# (0) User settings: ONLY edit these 3 paths
-$ENV_NAME   = "Stripformer"
-$GOPRO_ROOT = "D:\datasets\GOPRO"     # <- 너의 GoPro 경로로 수정
-$HIDE_ROOT  = "D:\datasets\HIDE"      # <- 너의 HIDE 경로로 수정
-$WEIGHTS    = ".\Pre_trained_model\Stripformer_gopro.pth"  # 또는 공식 weights 파일 경로로 수정
+This repository contains **research & demo code** for image deblurring based on **Stripformer**.  
+Some modules and overall structure are adapted from the **official Stripformer implementation**.
 
-# (1) Sanity check: are we at repo root?
-if (!(Test-Path ".\requirements.txt")) { throw "requirements.txt not found. Run this in repo root folder." }
+> If you use this code for research, please also cite and credit the original Stripformer work.
 
-# (2) Create conda env if not exists
-$envList = (conda env list) 2>$null
-if ($LASTEXITCODE -ne 0) { throw "conda not available in this terminal. (Try conda hook / init first.)" }
+---
 
-if ($envList -notmatch "^\s*$ENV_NAME\s") {
-  Write-Host "[1/6] Creating conda env: $ENV_NAME"
-  conda create -n $ENV_NAME python=3.8 -y
-} else {
-  Write-Host "[1/6] Conda env exists: $ENV_NAME"
-}
+## 🔍 Overview
+- **Task**: Image Deblurring (GoPro, HIDE)
+- **Backbone**: Stripformer / Stripformer variants (including cross-attention experiments)
+- **Framework**: Python + PyTorch
+- **Repository**: https://github.com/JcLee96/LJC_Stripformer
 
-# (3) Install deps (pip) inside env (no need to 'conda activate')
-Write-Host "[2/6] Installing dependencies (pip install -r requirements.txt)"
-conda run -n $ENV_NAME python -m pip install --upgrade pip
-conda run -n $ENV_NAME python -m pip install -r .\requirements.txt
+---
 
-# (4) Quick checks
-Write-Host "[3/6] Python path in env:"
-conda run -n $ENV_NAME python -c "import sys; print(sys.executable)"
+## 📁 Repository Structure
+```text
+.
+├─ train_Stripformer_cross_att_t2.py        # training entry
+├─ test_Stripformer_gopro.py                # test entry
+├─ predict_GoPro_test_results.py            # prediction / result export
+├─ extract_result.py                        # result extraction utilities
+├─ metric_counter.py                        # metrics counter
+├─ dataset.py                               # dataset loader
+├─ aug.py                                   # augmentation
+├─ config/
+│   ├─ config_Stripformer_gopro.yaml
+│   ├─ config_Stripformer_gopro2.yaml
+│   ├─ config_Stripformer_gopro3.yaml
+│   ├─ config_Stripformer_gopro4.yaml
+│   └─ config_Stripformer_pretrained.yaml
+├─ models/
+│   ├─ Stripformer.py
+│   ├─ Stripformer_cross_att.py
+│   ├─ networks.py / blocks.py / losses.py ...
+├─ util/
+│   ├─ metrics.py / util.py / visualizer.py ...
+└─ Pre_trained_model/
+    └─ Stripformer_gopro.pth
 
-# (5) (Optional) show dataset & weight paths
-Write-Host "[4/6] Paths"
-Write-Host "  GOPRO_ROOT = $GOPRO_ROOT"
-Write-Host "  HIDE_ROOT  = $HIDE_ROOT"
-Write-Host "  WEIGHTS    = $WEIGHTS"
-if (!(Test-Path $WEIGHTS)) {
-  Write-Host "  [WARN] weights file not found at: $WEIGHTS"
-  Write-Host "  -> Download official Stripformer_gopro.pth (or use your own) then set `$WEIGHTS correctly."
-}
 
-# (6) Run: choose what you want (uncomment only what you need)
+################################################################################
+# LJC_Stripformer : One-shot setup / download / train / test
+################################################################################
 
-# ---- A) TRAIN (your repo entry)
-# If your training script reads config internally, this may work as-is:
-# Write-Host "[5/6] Training (cross-att variant)"
-# conda run -n $ENV_NAME python .\train_Stripformer_cross_att_t2.py
+# 1. Clone repository
+git clone https://github.com/JcLee96/LJC_Stripformer.git
+cd LJC_Stripformer
 
-# If your training script supports --config:
-# Write-Host "[5/6] Training with config"
-# conda run -n $ENV_NAME python .\train_Stripformer_cross_att_t2.py --config .\config\config_Stripformer_gopro.yaml
+# 2. Create conda environment
+conda create -n ljc_stripformer python=3.10 -y
+conda activate ljc_stripformer
 
-# ---- B) TEST (your repo entry)
-# Write-Host "[5/6] Testing on GoPro"
-# conda run -n $ENV_NAME python .\test_Stripformer_gopro.py --config .\config\config_Stripformer_gopro.yaml
+# 3. Install PyTorch (CUDA 12.1)
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
-# ---- C) PREDICT / EXPORT (official-style usage in similar Stripformer repos) :contentReference[oaicite:1]{index=1}
-Write-Host "[5/6] Predict GoPro test results (requires weights + dataset path set in your code/config)"
-conda run -n $ENV_NAME python .\predict_GoPro_test_results.py --weights_path $WEIGHTS
+# 4. Install python dependencies
+pip install -r requirements.txt
 
-# If you also have HIDE predict script in your repo later:
-# Write-Host "[5/6] Predict HIDE test results"
-# conda run -n $ENV_NAME python .\predict_HIDE_results.py --weights_path $WEIGHTS
+################################################################################
+# 5. Official repositories & dataset links (manual download)
+################################################################################
 
-Write-Host "[6/6] Done."
+# Stripformer (official)
+# https://github.com/pp00704831/Stripformer
+
+# Stripformer pretrained weights (GoPro)
+# https://drive.google.com/drive/folders/1-4v8R8iYyqP4n8l7G3YhH0p2t3c2vX6P
+# → Download: Stripformer_gopro.pth
+# → Place to: Pre_trained_model/Stripformer_gopro.pth
+
+# GoPro dataset (official)
+# https://seungjunnah.github.io/Datasets/gopro
+# https://drive.google.com/drive/folders/1HczByhAj9h6A3X1K_xlZt4lGvZp1pFzZ
+
+# HIDE dataset (official)
+# https://github.com/joanshen0508/HIDE
+# https://drive.google.com/drive/folders/1rLZs5E_JoBFeoJEB6Digw1k3DybZ0_Sp
+
+################################################################################
+# 6. Train
+################################################################################
+
+python train_Stripformer_cross_att_t2.py \
+  --config config/config_Stripformer_gopro.yaml
+
+################################################################################
+# 7. Test (GoPro)
+################################################################################
+
+python test_Stripformer_gopro.py \
+  --config config/config_Stripformer_gopro.yaml \
+  --weights Pre_trained_model/Stripformer_gopro.pth
+
+################################################################################
+# 8. Predict / Export results
+################################################################################
+
+python predict_GoPro_test_results.py \
+  --config config/config_Stripformer_gopro.yaml \
+  --weights Pre_trained_model/Stripformer_gopro.pth
+
+python extract_result.py
+
+
