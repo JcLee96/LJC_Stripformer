@@ -1,9 +1,15 @@
 # LJC_Stripformer (Stripformer-based Image Deblurring)
 
-This repository contains **research & demo code** for image deblurring based on **Stripformer**.  
-Some modules and overall structure are adapted from the **official Stripformer implementation**.
+This repository contains **research & demo code** for image deblurring based on **Stripformer**,  
+and includes **partial implementations and experimental code** from the paper:
 
-> If you use this code for research, please also cite and credit the original Stripformer work.
+**“DELEca: Deblurring for Long and Short Exposure Images with a Dual-Branch Multimodal Cross-Attention Mechanism.”**
+
+Some modules and the overall structure are adapted from the **official Stripformer implementation**  
+and extended for **dual-branch and cross-attention based deblurring experiments**.
+
+> If you use this code for research, please also cite and credit both  
+> the original **Stripformer** work and the **DELEca** paper.
 
 ---
 
