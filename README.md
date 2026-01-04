@@ -40,6 +40,7 @@ Some modules and overall structure are adapted from the **official Stripformer i
 └─ Pre_trained_model/
     └─ Stripformer_gopro.pth
 
+## 📁 Training/Test Process
 
 ################################################################################
 # LJC_Stripformer : One-shot setup / download / train / test
