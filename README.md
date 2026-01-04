@@ -40,9 +40,7 @@ Some modules and overall structure are adapted from the **official Stripformer i
 └─ Pre_trained_model/
     └─ Stripformer_gopro.pth
 
-## 📁 Training/Test Process
-```text
-
+📁 Training / Test Process
 ################################################################################
 # LJC_Stripformer : One-shot setup / download / train / test
 ################################################################################
@@ -62,7 +60,7 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 pip install -r requirements.txt
 
 ################################################################################
-# 5. Official repositories & dataset links (manual download)
+# Official repositories & dataset links
 ################################################################################
 
 # Stripformer (official)
@@ -73,37 +71,32 @@ pip install -r requirements.txt
 # → Download: Stripformer_gopro.pth
 # → Place to: Pre_trained_model/Stripformer_gopro.pth
 
-# GoPro dataset (official)
+# GoPro dataset
 # https://seungjunnah.github.io/Datasets/gopro
 # https://drive.google.com/drive/folders/1HczByhAj9h6A3X1K_xlZt4lGvZp1pFzZ
 
-# HIDE dataset (official)
+# HIDE dataset
 # https://github.com/joanshen0508/HIDE
 # https://drive.google.com/drive/folders/1rLZs5E_JoBFeoJEB6Digw1k3DybZ0_Sp
 
 ################################################################################
-# 6. Train
+# Train
 ################################################################################
-
 python train_Stripformer_cross_att_t2.py \
   --config config/config_Stripformer_gopro.yaml
 
 ################################################################################
-# 7. Test (GoPro)
+# Test (GoPro)
 ################################################################################
-
 python test_Stripformer_gopro.py \
   --config config/config_Stripformer_gopro.yaml \
   --weights Pre_trained_model/Stripformer_gopro.pth
 
 ################################################################################
-# 8. Predict / Export results
+# Predict / Export results
 ################################################################################
-
 python predict_GoPro_test_results.py \
   --config config/config_Stripformer_gopro.yaml \
   --weights Pre_trained_model/Stripformer_gopro.pth
 
 python extract_result.py
-
-
